@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Ruota della Fortuna Personalizzata</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAAN6bRif0SiRgIVogFIdoXGcyTo8yCOdtp86-1BFsjPk9efx1Hid7QRfndhe3Oyv24vh_BQcCnnk1fsIY&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f9f9f9; padding: 20px; }
+    h2 { margin-bottom: 20px; }
+    #paypal-container { margin-bottom: 30px; }
+    #wheelCanvas { max-width: 500px; width: 100%; height: auto; }
+    #overlay { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.7); z-index: 10; }
+  </style>
+</head>
+<body>
+
+<h2>Gira la Ruota della Fortuna!</h2>
+
+<div id="paypal-container"></div>
+
+<div style="position:relative; display:inline-block;">
+  <canvas id="wheelCanvas" width="500" height="500"></canvas>
+  <div id="overlay"></div>
+</div>
+
+<script>
+const prizes = ["10€", "20€", "Perdi", "Bonus Extra", "Niente", "50€", "Piccolo premio", "Grande premio"];
+const colors = ["#FFCDD2","#F8BBD0","#E1BEE7","#D1C4E9","#C5CAE9","#BBDEFB","#B2DFDB","#C8E6C9"];
+let spinning = false;
+
+// Disegna la ruota
+function drawWheel(ctx) {
+  const numSegments = prizes.length;
+  const anglePer = 2 * Math.PI / numSegments;
+  for(let i=0; i<numSegments; i++){
+    ctx.beginPath();
+    ctx.moveTo(250,250);
+    ctx.arc(250,250,250,i*anglePer,(i+1)*anglePer);
+    ctx.fillStyle = colors[i%colors.length];
+    ctx.fill();
+    ctx.save();
+    ctx.translate(250,250);
+    ctx.rotate((i+0.5)*anglePer);
+    ctx.textAlign="right";
+    ctx.fillStyle="#000";
+    ctx.font="16px Arial";
+    ctx.fillText(prizes[i],240,0);
+    ctx.restore();
+  }
+}
+
+const canvas = document.getElementById("wheelCanvas");
+const ctx = canvas.getContext("2d");
+drawWheel(ctx);
+
+// Funzione per far girare la ruota
+function spinWheel() {
+  if(spinning || localStorage.getItem("girata")==="true"){ alert("Hai già girato!"); return; }
+  spinning = true;
+  let spinAngle = Math.random()*360 + 720; // minimo 2 giri
+  const duration = 4000; // 4 secondi
+  const start = performance.now();
+
+  function animate(time){
+    let t = (time-start)/duration;
+    if(t>1) t=1;
+    let easeOut = 1 - Math.pow(1-t,3);
+    let angle = easeOut*spinAngle;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0,0,500,500);
+    ctx.save();
+    ctx.translate(250,250);
+    ctx.rotate(angle*Math.PI/180);
+    ctx.translate(-250,-250);
+    drawWheel(ctx);
+    ctx.restore();
+    if(t<1) requestAnimationFrame(animate);
+    else {
+      spinning=false;
+      localStorage.setItem("girata","true");
+      document.getElementById("overlay").style.display="block";
+      const winningIndex = Math.floor(((spinAngle%360)/(360/prizes.length)));
+      alert("Hai vinto: "+prizes[prizes.length - 1 - winningIndex]);
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+// Hosted Button PayPal
+paypal.HostedButtons({
+  hostedButtonId: "EVWS5RHG3HSQS",
+  onApprove: function(data, actions) {
+    alert("Pagamento completato! Ora puoi girare la ruota.");
+    spinWheel();
+  }
+}).render("#paypal-container");
+</script>
+
+</body>
+</html>
