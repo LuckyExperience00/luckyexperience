@@ -68,15 +68,17 @@ function drawWheel(){
     ctx.moveTo(250,250);
     ctx.arc(250,250,200,angle,angle+arc);
     ctx.fill();
-    // Percentuale centrata
+    
+    // Percentuale scritta orizzontale centrata
     ctx.save();
     ctx.translate(250,250);
     ctx.rotate(angle + arc/2);
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+    ctx.rotate(-(angle + arc/2)); // annulla la rotazione per testo orizzontale
     ctx.fillStyle = "#000";
     ctx.font = "bold 18px Arial";
-    ctx.fillText(prizes[i].percent, 120, 0); // distanza dal centro
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(prizes[i].percent, 120, 0);
     ctx.restore();
   }
 }
@@ -86,7 +88,7 @@ function spinWheel(){
   if(spinning) return;
   spinning = true;
   let spinTime = 4000;
-  let spinAngle = Math.random() * 10 + 20; // casuale
+  let spinAngle = Math.random() * 10 + 20;
   let start = null;
 
   function animate(timestamp){
