@@ -1,130 +1,80 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lucky Experience</title>
+// Percentuali da mostrare sulla ruota
+const prizesPercent = ["20%","20%","20%","10%","25%","25%"];
 
-  <!-- PayPal -->
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAN6bRif0SiRgIVogFIdoXGcyTo8yCOdtp86-1BFsjPk9efx1Hid7QRfndhe3Oyv24vh_BQcCnnk1fsIY&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+// Premi completi da mostrare dopo lo spin
+const prizesFull = [
+  "20% sconto 1 notte in SPA con Aperitivo",
+  "20% sconto 1 notte in suite con aperitivo",
+  "20% sconto 1 notte in standard con aperitivo",
+  "10% sconto sosta 3 h in qualsiasi tipo di camera",
+  "25% sconto 1 notte in standard + 60 min percorso SPA",
+  "25% sconto 1 notte in suite + 60 min SPA"
+];
 
-  <!-- Winwheel.js e TweenMax -->
-  <script src="https://cdn.jsdelivr.net/npm/winwheel@2.7.0/Winwheel.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
-  <!-- QR Code -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qr-code-styling/1.5.0/qr-code-styling.min.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    #wheelCanvas {
-      max-width: 90%;
-      height: auto;
-    }
-    #paypal-container { margin: 20px 0; }
-    #popup {
-      display: none;
-      position: fixed;
-      top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.6);
-      display:flex; align-items:center; justify-content:center;
-      z-index:1000;
-    }
-    #popupContent {
-      background: #fff; padding: 20px; border-radius: 10px;
-      text-align:center; max-width: 90%; width: 400px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    #popupContent button {
-      margin-top: 15px; padding: 10px 20px; border:none;
-      background:#ff6600; color:white; border-radius:5px; cursor:pointer; font-size:16px;
-    }
-  </style>
-</head>
-<body>
-
-<h1>Gira la Ruota e Vinci!</h1>
-<div id="paypal-container"></div>
-<canvas id="wheelCanvas" width="500" height="500"></canvas>
-
-<div id="popup">
-  <div id="popupContent">
-    <h2 id="prizeTitle"></h2>
-    <p>Il tuo codice voucher:</p>
-    <h3 id="voucherCode"></h3>
-    <div id="qrCode" style="margin:15px auto;"></div>
-    <button onclick="closePopup()">Chiudi</button>
-  </div>
-</div>
-
-<script>
-  // Definisci i premi
-  const prizes = [
-    {color: "#ffcc66", text:"20%", desc: "20% sconto 1 notte in SPA con Aperitivo"},
-    {color: "#ff9966", text:"20%", desc: "20% sconto 1 notte in suite con Aperitivo"},
-    {color: "#ffcc66", text:"20%", desc: "20% sconto 1 notte in standard con Aperitivo"},
-    {color: "#ff9966", text:"10%", desc: "10% sconto sosta 3h in qualsiasi tipo di camera"},
-    {color: "#ffcc66", text:"25%", desc: "25% sconto 1 notte in standard + 60 min percorso SPA"},
-    {color: "#ff9966", text:"25%", desc: "25% sconto 1 notte in suite + 60 min SPA"}
-  ];
-
-  // Crea la ruota
-  let wheel = new Winwheel({
-    'canvasId': 'wheelCanvas',
-    'numSegments': prizes.length,
-    'segments': prizes.map(p => ({fillStyle:p.color, text:p.text})),
-    'animation': {
-      'type':'spinToStop',
-      'duration': 5,
-      'spins': 8,
-      'callbackFinished': alertPrize
-    }
-  });
-
-  // Funzione popup premio
-  function alertPrize(indicatedSegment){
-    let index = wheel.getIndicatedSegmentNumber() - 1;
-    let prize = prizes[index];
-    let code = "LV-" + Math.floor(Math.random()*90000+10000) + "-" + Math.random().toString(36).substring(2,4).toUpperCase();
-
-    document.getElementById("prizeTitle").textContent = prize.desc;
-    document.getElementById("voucherCode").textContent = code;
-
-    document.getElementById("qrCode").innerHTML = "";
-    new QRCodeStyling({
-      width: 150,
-      height: 150,
-      data: code
-    }).append(document.getElementById("qrCode"));
-
-    document.getElementById("popup").style.display = "flex";
+// Modifica drawWheelBase:
+function drawWheelBase(rotation=0) {
+  const num = prizesPercent.length;
+  const cx = canvas.width/2, cy = canvas.height/2, r = canvas.width/2;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const arc = 2*Math.PI/num;
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(rotation);
+  for(let i=0;i<num;i++){
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.arc(0,0,r,i*arc,(i+1)*arc);
+    ctx.fillStyle = colors[i%colors.length];
+    ctx.fill();
+    ctx.save();
+    ctx.rotate(i*arc + arc/2);
+    ctx.fillStyle="#111";
+    ctx.textAlign="right";
+    ctx.font = "16px Arial";
+    ctx.fillText(prizesPercent[i], r-10, 6); // <-- Solo percentuale
+    ctx.restore();
   }
+  ctx.restore();
+  ctx.fillStyle = "#222";
+  ctx.beginPath();
+  ctx.moveTo(cx-10, 10);
+  ctx.lineTo(cx+10, 10);
+  ctx.lineTo(cx, 28);
+  ctx.fill();
+}
 
-  function closePopup(){
-    document.getElementById("popup").style.display = "none";
+// Modifica spinWheel, alert finale:
+function spinWheel(){
+  if(isSpinning) return;
+  if(localStorage.getItem("girata")==="true"){
+    alert("Hai già utilizzato il tuo giro.");
+    return;
   }
+  isSpinning = true;
+  spinBtn.disabled = true;
 
-  // PayPal: ogni pagamento permette 1 giro
-  paypal.HostedButtons({
-    hostedButtonId: "EVWS5RHG3HSQS",
-    onApprove: function(data, actions){
-      wheel.startAnimation();
+  const totalDeg = Math.random()*360 + 1080;
+  const duration = 4500;
+  const start = performance.now();
+
+  function frame(now){
+    let t = (now - start)/duration;
+    if(t>1) t=1;
+    const ease = 1 - Math.pow(1 - t, 3);
+    const deg = ease * totalDeg;
+    const rad = deg * Math.PI/180;
+    drawWheelBase(rad);
+    if(t < 1) requestAnimationFrame(frame);
+    else {
+      isSpinning = false;
+      localStorage.setItem("girata","true");
+      overlay.style.display = "block";
+      const landed = (360 - (totalDeg % 360)) % 360;
+      const slice = 360 / prizesFull.length;
+      let index = Math.floor(landed / slice);
+      const winner = prizesFull[(prizesFull.length - 1 - index + prizesFull.length) % prizesFull.length];
+      setTimeout(() => alert("Hai vinto: " + winner), 200);
     }
-  }).render("#paypal-container");
-
-</script>
-</body>
-</html>
+  }
+  requestAnimationFrame(frame);
+}
