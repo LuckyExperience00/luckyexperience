@@ -17,7 +17,6 @@
     #overlay { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); border-radius:50%; }
     footer{ margin-top:18px; color:#777; font-size:13px; }
   </style>
-  <!-- PayPal SDK (client-id tuo) -->
   <script src="https://www.paypal.com/sdk/js?client-id=BAAN6bRif0SiRgIVogFIdoXGcyTo8yCOdtp86-1BFsjPk9efx1Hid7QRfndhe3Oyv24vh_BQcCnnk1fsIY&components=hosted-buttons&currency=EUR"></script>
 </head>
 <body>
@@ -25,13 +24,9 @@
     <h1>🎯 Lucky Experience</h1>
     <p>Paga e prova a vincere: un solo giro consentito per utente/browser.</p>
 
-    <!-- Contenitore PayPal (Hosted Button) -->
     <div id="paypal-container"></div>
-
-    <!-- Pulsante "Gira" che appare solo dopo pagamento -->
     <button id="spin-button">Gira la Ruota!</button>
 
-    <!-- Ruota -->
     <div id="wheel-wrap">
       <canvas id="wheelCanvas" width="500" height="500"></canvas>
       <div id="overlay"></div>
@@ -41,27 +36,28 @@
   </div>
 
 <script>
-/* ===========================
-   CONFIGURAZIONE - modifica qui se vuoi
-   =========================== */
-const HOSTED_BUTTON_ID = "EVWS5RHG3HSQS"; // il tuo Hosted Button ID
-const RETURN_URL = "https://davidflow00.github.io/luckyexperience/?paid=1"; // metti questo in PayPal come Return URL
+const HOSTED_BUTTON_ID = "EVWS5RHG3HSQS";
+const RETURN_URL = "https://davidflow00.github.io/luckyexperience/?paid=1";
 
-// Premi della ruota - modifica a piacere
-const prizes = ["Sconto 5€","Riprova","Sconto 10€","Niente","Sorpresa!","Sconto 15€"];
+// Premi ufficiali
+const prizes = [
+  "20% sconto 1 notte in SPA con Aperitivo",
+  "20% sconto 1 notte in suite con aperitivo",
+  "20% sconto 1 notte in standard con aperitivo",
+  "10% sconto sosta 3 h in qualsiasi tipo di camera",
+  "25% sconto 1 notte in standard + 60 min percorso SPA",
+  "25% sconto 1 notte in suite + 60 min SPA"
+];
+
+// Colori armonizzati
 const colors = ["#FFCDD2","#F8BBD0","#E1BEE7","#C5CAE9","#BBDEFB","#B2DFDB"];
-/* ===========================
-   Fine configurazione
-   =========================== */
 
-/* elementi UI */
 const paypalContainer = document.getElementById("paypal-container");
 const spinBtn = document.getElementById("spin-button");
 const canvas = document.getElementById("wheelCanvas");
 const ctx = canvas.getContext("2d");
 const overlay = document.getElementById("overlay");
 
-/* disegna la ruota */
 function drawWheelBase(rotation=0) {
   const num = prizes.length;
   const cx = canvas.width/2, cy = canvas.height/2, r = canvas.width/2;
@@ -80,13 +76,11 @@ function drawWheelBase(rotation=0) {
     ctx.rotate(i*arc + arc/2);
     ctx.fillStyle="#111";
     ctx.textAlign="right";
-    ctx.font = "18px Arial";
+    ctx.font = "16px Arial";
     ctx.fillText(prizes[i], r-10, 6);
     ctx.restore();
   }
   ctx.restore();
-
-  // disegna freccia in alto
   ctx.fillStyle = "#222";
   ctx.beginPath();
   ctx.moveTo(cx-10, 10);
@@ -95,10 +89,8 @@ function drawWheelBase(rotation=0) {
   ctx.fill();
 }
 
-/* inizializza ruota */
 drawWheelBase();
 
-/* Spin logic */
 let isSpinning = false;
 function spinWheel(){
   if(isSpinning) return;
@@ -109,7 +101,7 @@ function spinWheel(){
   isSpinning = true;
   spinBtn.disabled = true;
 
-  const totalDeg = Math.random()*360 + 1080; // almeno 3 giri
+  const totalDeg = Math.random()*360 + 1080;
   const duration = 4500;
   const start = performance.now();
 
@@ -125,11 +117,9 @@ function spinWheel(){
       isSpinning = false;
       localStorage.setItem("girata","true");
       overlay.style.display = "block";
-      // calcolo vincitore
-      const landed = (360 - (totalDeg % 360)) % 360; // angolo rispetto alla freccia
+      const landed = (360 - (totalDeg % 360)) % 360;
       const slice = 360 / prizes.length;
       let index = Math.floor(landed / slice);
-      // ruota disegnata con prizes[0] in primo settore: invertiamo per corrispondenza visiva
       const winner = prizes[(prizes.length - 1 - index + prizes.length) % prizes.length];
       setTimeout(() => alert("Hai vinto: " + winner), 200);
     }
@@ -137,9 +127,7 @@ function spinWheel(){
   requestAnimationFrame(frame);
 }
 
-/* mostra il pulsante spin se è stato pagato */
 function enableSpinUI(){
-  // se già girato, mostri overlay e niente spin
   if(localStorage.getItem("girata")==="true"){
     overlay.style.display = "block";
     spinBtn.style.display = "none";
@@ -149,25 +137,19 @@ function enableSpinUI(){
   spinBtn.disabled = false;
 }
 
-/* PayPal Hosted Button render */
 paypal.HostedButtons({
   hostedButtonId: HOSTED_BUTTON_ID,
-  // se PayPal riesce a chiamare onApprove, abilitiamo la ruota immediatamente
   onApprove: function(data, actions) {
-    // segnalo che è stato pagato (localmente) e abilito spin
     try { localStorage.setItem("paid_flag","true"); } catch(e){}
     enableSpinUI();
     alert("Pagamento confermato! Ora puoi girare.");
   }
 }).render("#paypal-container");
 
-/* Fallback: rileva se la pagina è stata caricata con ?paid=1 (PayPal redirect) */
 function checkUrlForPaid(){
   const params = new URLSearchParams(window.location.search);
   if(params.get("paid") === "1" || localStorage.getItem("paid_flag")==="true"){
-    // pulito l'URL (rimuovo param) per non ripetere l'azione se ricarica
     if(params.get("paid") === "1"){
-      // rimuoviamo query string dallo storico per pulizia
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
     }
@@ -175,12 +157,10 @@ function checkUrlForPaid(){
   }
 }
 
-/* Attiva controllo all'avvio */
 document.addEventListener("DOMContentLoaded", function(){
   checkUrlForPaid();
 });
 
-/* click sul pulsante spin */
 spinBtn.addEventListener("click", spinWheel);
 </script>
 </body>
