@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucky Experience</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 40px;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #222;
+    }
+
+    p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    #paypal-container {
+      display: inline-block;
+      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+
+    button {
+      background-color: #0070ba;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #005c99;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Benvenuto in Lucky Experience!</h1>
+  <p>Paga e accedi alla ruota per provare a vincere!</p>
+
+  <!-- PayPal SDK -->
+  <script 
+    src="https://www.paypal.com/sdk/js?client-id=BAAN6bRif0SiRgIVogFIdoXGcyTo8yCOdtp86-1BFsjPk9efx1Hid7QRfndhe3Oyv24vh_BQcCnnk1fsIY&components=hosted-buttons&disable-funding=venmo&currency=EUR">
+  </script>
+
+  <!-- PayPal Button -->
+  <div id="paypal-container"></div>
+  <script>
+    paypal.HostedButtons({
+      hostedButtonId: "EVWS5RHG3HSQS",
+    }).render("#paypal-container");
+
+    // Quando l’utente completa il pagamento, reindirizza alla ruota
+    document.addEventListener("DOMContentLoaded", () => {
+      const observer = new MutationObserver(() => {
+        const successFrame = document.querySelector("iframe[src*='paypal.com/checkoutnow']");
+        if (successFrame) {
+          successFrame.addEventListener("load", () => {
+            // Dopo il pagamento, redirect alla ruota
+            window.location.href = "https://wheelofnames.com/it/26h-2h9";
+          });
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
+  </script>
+</body>
+</html>
