@@ -1,64 +1,67 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lucky Experience - Ruota della Fortuna</title>
-  <style>
-    body { font-family: Arial, sans-serif; background:#f7f7f7; color:#222; margin:0; padding:30px; text-align:center; }
-    .card { background:#fff; border-radius:10px; padding:20px; display:inline-block; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
-    h1 { margin:0 0 12px; font-size:22px; }
-    p { margin:0 0 18px; color:#555; }
-    #paypal-container { margin-bottom:18px; }
-    #spin-button { display:none; margin: 12px auto; padding:10px 18px; background:#0070ba; color:#fff; border:none;border-radius:8px; cursor:pointer; font-size:16px; }
-    #spin-button[disabled]{ opacity:0.6; cursor:not-allowed; }
-    #wheel-wrap{ position:relative; display:inline-block; margin-top:14px;}
-    canvas{ width:320px; height:320px; max-width:90vw; border-radius:50%; display:block; }
-    #overlay { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); border-radius:50%; text-align:center; }
-    footer{ margin-top:18px; color:#777; font-size:13px; }
-  </style>
-  <!-- Libreria QR -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-  <!-- PayPal SDK -->
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAN6bRif0SiRgIVogFIdoXGcyTo8yCOdtp86-1BFsjPk9efx1Hid7QRfndhe3Oyv24vh_BQcCnnk1fsIY&components=hosted-buttons&currency=EUR"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lucky Experience - Ruota della Fortuna</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f2f5; color:#222; margin:0; padding:30px; text-align:center; }
+  .card { background:#fff; border-radius:12px; padding:25px; display:inline-block; box-shadow:0 8px 20px rgba(0,0,0,0.08); }
+  h1 { margin:0 0 10px; font-size:24px; color:#333; }
+  p { margin:0 0 18px; color:#555; font-size:16px; }
+  #paypal-container { margin-bottom:18px; }
+  #spin-button { display:none; margin: 15px auto; padding:12px 22px; background:#0070ba; color:#fff; border:none; border-radius:10px; cursor:pointer; font-size:18px; transition:0.3s; }
+  #spin-button:hover { background:#005ea6; }
+  #spin-button[disabled]{ opacity:0.6; cursor:not-allowed; }
+  #wheel-wrap{ position:relative; display:inline-block; margin-top:20px;}
+  canvas{ width:350px; height:350px; max-width:90vw; border-radius:50%; }
+  #overlay { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.85); border-radius:50%; text-align:center; line-height:350px; font-size:24px; color:#333; font-weight:bold; }
+  footer{ margin-top:18px; color:#777; font-size:13px; }
+</style>
+<script src="https://www.paypal.com/sdk/js?client-id=BAAN6bRif0SiRgIVogFIdoXGcyTo8yCOdtp86-1BFsjPk9efx1Hid7QRfndhe3Oyv24vh_BQcCnnk1fsIY&components=hosted-buttons&currency=EUR"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
-  <div class="card">
-    <h1>🎯 Lucky Experience</h1>
-    <p>Paga e prova a vincere: un solo giro consentito per utente/browser.</p>
+<div class="card">
+  <h1>🎯 Lucky Experience</h1>
+  <p>Paga e prova a vincere: un solo giro per pagamento.</p>
 
-    <div id="paypal-container"></div>
-    <button id="spin-button">Gira la Ruota!</button>
+  <div id="paypal-container-EVWS5RHG3HSQS"></div>
+  <button id="spin-button">Gira la Ruota!</button>
 
-    <div id="wheel-wrap">
-      <canvas id="wheelCanvas" width="500" height="500"></canvas>
-      <div id="overlay"></div>
-    </div>
-
-    <footer>Se non vedi la ruota subito dopo il pagamento, assicurati che PayPal reindirizzi a questa pagina con <code>?paid=1</code>.</footer>
+  <div id="wheel-wrap">
+    <canvas id="wheelCanvas" width="500" height="500"></canvas>
+    <div id="overlay"></div>
   </div>
+
+  <footer>Se non vedi la ruota subito dopo il pagamento, assicurati che PayPal reindirizzi a questa pagina con <code>?paid=1</code>.</footer>
+</div>
 
 <script>
 const HOSTED_BUTTON_ID = "EVWS5RHG3HSQS";
+const RETURN_URL = "https://luckyexperience00.github.io/luckyexperience/?paid=1";
 
-// Premi e percentuali
+// Premi ufficiali
 const prizes = [
-  { text: "20% SPA + Aperitivo", full: "20% sconto 1 notte in SPA con Aperitivo" },
-  { text: "20% Suite + Aperitivo", full: "20% sconto 1 notte in suite con aperitivo" },
-  { text: "20% Standard + Aperitivo", full: "20% sconto 1 notte in standard con aperitivo" },
-  { text: "10% 3h Sosta", full: "10% sconto sosta 3 h in qualsiasi tipo di camera" },
-  { text: "25% Standard + SPA", full: "25% sconto 1 notte in standard + 60 min percorso SPA" },
-  { text: "25% Suite + SPA", full: "25% sconto 1 notte in suite + 60 min SPA" }
+  {percent: "20%", description: "1 notte in SPA con Aperitivo"},
+  {percent: "20%", description: "1 notte in suite con Aperitivo"},
+  {percent: "20%", description: "1 notte in standard con Aperitivo"},
+  {percent: "10%", description: "Sosta 3h in qualsiasi camera"},
+  {percent: "25%", description: "1 notte in standard + 60min percorso SPA"},
+  {percent: "25%", description: "1 notte in suite + 60min SPA"}
 ];
+
+// Colori armonizzati
 const colors = ["#FFCDD2","#F8BBD0","#E1BEE7","#C5CAE9","#BBDEFB","#B2DFDB"];
 
-const paypalContainer = document.getElementById("paypal-container");
+const paypalContainer = document.getElementById("paypal-container-EVWS5RHG3HSQS");
 const spinBtn = document.getElementById("spin-button");
 const canvas = document.getElementById("wheelCanvas");
 const ctx = canvas.getContext("2d");
 const overlay = document.getElementById("overlay");
 
-function drawWheelBase(rotation=0) {
+// Disegna ruota con percentuali
+function drawWheelBase(rotation=0){
   const num = prizes.length;
   const cx = canvas.width/2, cy = canvas.height/2, r = canvas.width/2;
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -76,22 +79,26 @@ function drawWheelBase(rotation=0) {
     ctx.rotate(i*arc + arc/2);
     ctx.fillStyle="#111";
     ctx.textAlign="right";
-    ctx.font = "16px Arial";
-    ctx.fillText(prizes[i].text, r-10, 6);
+    ctx.font = "20px Arial";
+    ctx.fillText(prizes[i].percent, r-10, 6);
     ctx.restore();
   }
   ctx.restore();
+  // Indicatore fisso
   ctx.fillStyle = "#222";
   ctx.beginPath();
-  ctx.moveTo(cx-10, 10);
-  ctx.lineTo(cx+10, 10);
-  ctx.lineTo(cx, 28);
+  ctx.moveTo(cx-12, 12);
+  ctx.lineTo(cx+12, 12);
+  ctx.lineTo(cx, 30);
   ctx.fill();
 }
-
 drawWheelBase();
 
 let isSpinning = false;
+function generateCode(){
+  return Math.random().toString(36).substring(2,10).toUpperCase();
+}
+
 function spinWheel(){
   if(isSpinning) return;
   if(localStorage.getItem("girata")==="true"){
@@ -106,38 +113,25 @@ function spinWheel(){
   const start = performance.now();
 
   function frame(now){
-    let t = (now - start)/duration;
+    let t = (now-start)/duration;
     if(t>1) t=1;
-    const ease = 1 - Math.pow(1 - t, 3);
-    const deg = ease * totalDeg;
-    const rad = deg * Math.PI/180;
+    const ease = 1 - Math.pow(1-t,3);
+    const deg = ease*totalDeg;
+    const rad = deg*Math.PI/180;
     drawWheelBase(rad);
-    if(t < 1) requestAnimationFrame(frame);
+    if(t<1) requestAnimationFrame(frame);
     else {
-      isSpinning = false;
+      isSpinning=false;
       localStorage.setItem("girata","true");
-      // Calcolo vincitore
-      const landed = (360 - (totalDeg % 360)) % 360;
-      const slice = 360 / prizes.length;
-      let index = Math.floor(landed / slice);
-      const winner = prizes[(prizes.length - 1 - index + prizes.length) % prizes.length];
-
-      // Codice unico
-      const code = "VINCITA-" + Date.now() + "-" + Math.floor(Math.random()*1000);
-
-      // Popup con premio e QR
-      overlay.innerHTML = `
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-                    background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.2);
-                    text-align:center;max-width:90vw;">
-          <h2>🎉 Hai vinto: ${winner.full}</h2>
-          <p>Codice unico: <strong>${code}</strong></p>
-          <canvas id="qrCanvas"></canvas>
-          <button onclick="this.parentElement.style.display='none';overlay.style.display='none';">Chiudi</button>
-        </div>
-      `;
-      new QRious({ element: document.getElementById('qrCanvas'), value: code, size:150 });
-      overlay.style.display = "block";
+      overlay.style.display="block";
+      const landed = (360 - (totalDeg%360)) % 360;
+      const slice = 360/prizes.length;
+      let index = Math.floor(landed/slice);
+      const prizeIndex = (prizes.length-1-index+prizes.length)%prizes.length;
+      const winner = prizes[prizeIndex];
+      const code = generateCode();
+      overlay.innerHTML = `Hai vinto: ${winner.percent}<br>${winner.description}<br>Codice: ${code}<div id="qrcode"></div>`;
+      new QRCode(document.getElementById("qrcode"),{text: code, width:100, height:100});
     }
   }
   requestAnimationFrame(frame);
@@ -145,27 +139,27 @@ function spinWheel(){
 
 function enableSpinUI(){
   if(localStorage.getItem("girata")==="true"){
-    overlay.style.display = "block";
-    spinBtn.style.display = "none";
+    overlay.style.display="block";
+    spinBtn.style.display="none";
     return;
   }
-  spinBtn.style.display = "inline-block";
-  spinBtn.disabled = false;
+  spinBtn.style.display="inline-block";
+  spinBtn.disabled=false;
 }
 
 paypal.HostedButtons({
   hostedButtonId: HOSTED_BUTTON_ID,
   onApprove: function(data, actions) {
-    try { localStorage.setItem("paid_flag","true"); } catch(e){}
+    try{ localStorage.setItem("paid_flag","true"); } catch(e){}
     enableSpinUI();
     alert("Pagamento confermato! Ora puoi girare.");
   }
-}).render("#paypal-container");
+}).render("#paypal-container-EVWS5RHG3HSQS");
 
 function checkUrlForPaid(){
   const params = new URLSearchParams(window.location.search);
-  if(params.get("paid") === "1" || localStorage.getItem("paid_flag")==="true"){
-    if(params.get("paid") === "1"){
+  if(params.get("paid")==="1" || localStorage.getItem("paid_flag")==="true"){
+    if(params.get("paid")==="1"){
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
     }
@@ -173,11 +167,11 @@ function checkUrlForPaid(){
   }
 }
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded",function(){
   checkUrlForPaid();
 });
 
-spinBtn.addEventListener("click", spinWheel);
+spinBtn.addEventListener("click",spinWheel);
 </script>
 </body>
 </html>
