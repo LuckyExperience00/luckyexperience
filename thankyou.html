@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pagamento completato</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      text-align: center;
+      padding: 60px;
+      background: #f4f4f4;
+    }
+    h1 { color: #0070ba; }
+  </style>
+</head>
+<body>
+  <h1>✅ Pagamento completato!</h1>
+  <p>Verrai reindirizzato alla tua ruota in pochi secondi...</p>
+
+  <script>
+    // salva lo stato del pagamento
+    localStorage.setItem("paid_flag", "true");
+    // reindirizza automaticamente alla ruota
+    setTimeout(() => {
+      window.location.href = "https://davidflow00.github.io/luckyexperience/";
+    }, 2500);
+  </script>
+</body>
+</html>
