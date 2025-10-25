@@ -1,64 +1,65 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Lucky Experience - Ruota della Fortuna</title>
 <style>
-body { font-family: Arial, sans-serif; background:#f7f7f7; color:#222; margin:0; padding:30px; text-align:center; }
-.card { background:#fff; border-radius:10px; padding:20px; display:inline-block; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
-h1 { margin:0 0 12px; font-size:22px; }
-p { margin:0 0 18px; color:#555; }
-#paypal-container { margin-bottom:18px; }
-#spin-button { display:none; margin: 12px auto; padding:10px 18px; background:#0070ba; color:#fff; border:none;border-radius:8px; cursor:pointer; font-size:16px; }
-#spin-button[disabled]{ opacity:0.6; cursor:not-allowed; }
-#wheel-wrap{ position:relative; display:inline-block; margin-top:14px;}
-canvas{ width:320px; height:320px; max-width:90vw; border-radius:50%; display:block; }
-#overlay { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); border-radius:50%; }
-footer{ margin-top:18px; color:#777; font-size:13px; }
+  body { font-family: Arial, sans-serif; background:#f7f7f7; color:#222; margin:0; padding:30px; text-align:center; }
+  .card { background:#fff; border-radius:10px; padding:20px; display:inline-block; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+  h1 { margin:0 0 12px; font-size:22px; }
+  p { margin:0 0 18px; color:#555; }
+  #paypal-container { margin-bottom:18px; }
+  #spin-button { display:none; margin: 12px auto; padding:10px 18px; background:#0070ba; color:#fff; border:none;border-radius:8px; cursor:pointer; font-size:16px; }
+  #spin-button[disabled]{ opacity:0.6; cursor:not-allowed; }
+  #wheel-wrap{ position:relative; display:inline-block; margin-top:14px; }
+  canvas{ width:320px; height:320px; max-width:90vw; border-radius:50%; display:block; }
+  #overlay { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); border-radius:50%; z-index:5; }
+  footer{ margin-top:18px; color:#777; font-size:13px; }
 </style>
-<script src="https://www.paypal.com/sdk/js?client-id=BAAN6bRif0SiRgIVogFIdoXGcyTo8yCOdtp86-1BFsjPk9efx1Hid7QRfndhe3Oyv24vh_BQcCnnk1fsIY&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=BAAN6bRif0SiRgIVogFIdoXGcyTo8yCOdtp86-1BFsjPk9efx1Hid7QRfndhe3Oyv24vh_BQcCnnk1fsIY&components=hosted-buttons&currency=EUR"></script>
 </head>
 <body>
 <div class="card">
-<h1>🎯 Lucky Experience</h1>
-<p>Paga e prova a vincere: un solo giro consentito per utente/browser.</p>
+  <h1>🎯 Lucky Experience</h1>
+  <p>Paga e prova a vincere: un solo giro consentito per utente/browser.</p>
 
-<div id="paypal-container"></div>
-<button id="spin-button">Gira la Ruota!</button>
+  <div id="paypal-container-EVWS5RHG3HSQS"></div>
+  <button id="spin-button">Gira la Ruota!</button>
 
-<div id="wheel-wrap">
-  <canvas id="wheelCanvas" width="500" height="500"></canvas>
-  <div id="overlay"></div>
-</div>
+  <div id="wheel-wrap">
+    <canvas id="wheelCanvas" width="500" height="500"></canvas>
+    <div id="overlay"></div>
+  </div>
 
-<footer>Se non vedi la ruota subito dopo il pagamento, assicurati che PayPal reindirizzi a questa pagina con <code>?paid=1</code>.</footer>
+  <footer>Se non vedi la ruota subito dopo il pagamento, assicurati che PayPal reindirizzi a questa pagina con <code>?paid=1</code>.</footer>
 </div>
 
 <script>
-// LINK PAYPAL
+// Configurazioni
 const HOSTED_BUTTON_ID = "EVWS5RHG3HSQS";
+const RETURN_URL = "https://luckyexperience00.github.io/luckyexperience/?paid=1";
 
 // Premi e percentuali
 const prizes = [
-  {percent:"20%", description:"20% sconto 1 notte in SPA con Aperitivo"},
-  {percent:"20%", description:"20% sconto 1 notte in suite con aperitivo"},
-  {percent:"20%", description:"20% sconto 1 notte in standard con aperitivo"},
-  {percent:"10%", description:"10% sconto sosta 3 h in qualsiasi tipo di camera"},
-  {percent:"25%", description:"25% sconto 1 notte in standard + 60 min percorso SPA"},
-  {percent:"25%", description:"25% sconto 1 notte in suite + 60 min SPA"}
+  {percent:"20%", prize:"1 notte in SPA con Aperitivo"},
+  {percent:"20%", prize:"1 notte in suite con aperitivo"},
+  {percent:"20%", prize:"1 notte in standard con aperitivo"},
+  {percent:"10%", prize:"Sosta 3 h in qualsiasi tipo di camera"},
+  {percent:"25%", prize:"1 notte in standard + 60 min percorso SPA"},
+  {percent:"25%", prize:"1 notte in suite + 60 min SPA"}
 ];
 
-// colori fette
+// Colori
 const colors = ["#FFCDD2","#F8BBD0","#E1BEE7","#C5CAE9","#BBDEFB","#B2DFDB"];
 
-const paypalContainer = document.getElementById("paypal-container");
+const paypalContainer = document.getElementById("paypal-container-EVWS5RHG3HSQS");
 const spinBtn = document.getElementById("spin-button");
 const canvas = document.getElementById("wheelCanvas");
 const ctx = canvas.getContext("2d");
 const overlay = document.getElementById("overlay");
 
-// disegna ruota con percentuali
+// Disegna ruota (solo percentuali)
 function drawWheel(rotation=0){
   const num = prizes.length;
   const cx = canvas.width/2, cy = canvas.height/2, r = canvas.width/2;
@@ -73,17 +74,16 @@ function drawWheel(rotation=0){
     ctx.arc(0,0,r,i*arc,(i+1)*arc);
     ctx.fillStyle = colors[i%colors.length];
     ctx.fill();
-    // percentuale centrale
     ctx.save();
     ctx.rotate(i*arc + arc/2);
     ctx.fillStyle="#111";
     ctx.textAlign="right";
-    ctx.font = "bold 18px Arial";
-    ctx.fillText(prizes[i].percent, r-20, 6);
+    ctx.font = "20px Arial";
+    ctx.fillText(prizes[i].percent, r-10, 6);
     ctx.restore();
   }
   ctx.restore();
-  // freccia in alto
+  // freccia
   ctx.fillStyle="#222";
   ctx.beginPath();
   ctx.moveTo(cx-10, 10);
@@ -98,7 +98,7 @@ let isSpinning = false;
 
 function spinWheel(){
   if(isSpinning) return;
-  if(localStorage.getItem("girata")==="true"){
+  if(localStorage.getItem("girata") === "true"){
     alert("Hai già utilizzato il tuo giro.");
     return;
   }
@@ -110,22 +110,22 @@ function spinWheel(){
   const start = performance.now();
 
   function frame(now){
-    let t = (now-start)/duration;
+    let t = (now - start)/duration;
     if(t>1) t=1;
-    const ease = 1-Math.pow(1-t,3);
-    const deg = ease*totalDeg;
-    const rad = deg*Math.PI/180;
+    const ease = 1 - Math.pow(1 - t, 3);
+    const deg = ease * totalDeg;
+    const rad = deg * Math.PI/180;
     drawWheel(rad);
-    if(t<1) requestAnimationFrame(frame);
+    if(t < 1) requestAnimationFrame(frame);
     else {
-      isSpinning=false;
+      isSpinning = false;
       localStorage.setItem("girata","true");
-      overlay.style.display="block";
-      const landed = (360-(totalDeg%360))%360;
-      const slice = 360/prizes.length;
-      let index = Math.floor(landed/slice);
-      const winner = prizes[(prizes.length-1-index+prizes.length)%prizes.length];
-      setTimeout(()=>alert("Hai vinto: "+winner.description),200);
+      overlay.style.display = "block";
+      const landed = (360 - (totalDeg % 360)) % 360;
+      const slice = 360 / prizes.length;
+      let index = Math.floor(landed / slice);
+      const winner = prizes[(prizes.length - 1 - index + prizes.length) % prizes.length];
+      alert(`Hai vinto: ${prizes[winner].percent} → ${prizes[winner].prize}`);
     }
   }
   requestAnimationFrame(frame);
@@ -133,37 +133,40 @@ function spinWheel(){
 
 function enableSpinUI(){
   if(localStorage.getItem("girata")==="true"){
-    overlay.style.display="block";
-    spinBtn.style.display="none";
+    overlay.style.display = "block";
+    spinBtn.style.display = "none";
     return;
   }
-  spinBtn.style.display="inline-block";
-  spinBtn.disabled=false;
+  spinBtn.style.display = "inline-block";
+  spinBtn.disabled = false;
 }
 
-// PAYPAL
+// PayPal
 paypal.HostedButtons({
   hostedButtonId: HOSTED_BUTTON_ID,
-  onApprove: function(data, actions){
-    try{ localStorage.setItem("paid_flag","true"); }catch(e){}
+  onApprove: function(data, actions) {
+    try { localStorage.setItem("paid_flag","true"); } catch(e){}
     enableSpinUI();
     alert("Pagamento confermato! Ora puoi girare.");
   }
-}).render("#paypal-container");
+}).render("#paypal-container-EVWS5RHG3HSQS");
 
-// Controlla URL
-function checkPaidURL(){
+// Controllo URL
+function checkUrlForPaid(){
   const params = new URLSearchParams(window.location.search);
-  if(params.get("paid")==="1" || localStorage.getItem("paid_flag")==="true"){
-    if(params.get("paid")==="1"){
+  if(params.get("paid") === "1" || localStorage.getItem("paid_flag")==="true"){
+    if(params.get("paid") === "1"){
       const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({},document.title,cleanUrl);
+      window.history.replaceState({}, document.title, cleanUrl);
     }
     enableSpinUI();
   }
 }
 
-document.addEventListener("DOMContentLoaded",()=>{ checkPaidURL(); });
+document.addEventListener("DOMContentLoaded", function(){
+  checkUrlForPaid();
+});
+
 spinBtn.addEventListener("click", spinWheel);
 </script>
 </body>
