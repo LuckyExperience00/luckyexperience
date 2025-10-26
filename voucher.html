@@ -21,21 +21,10 @@
       box-shadow: 0 0 15px #ffd70033;
       max-width: 360px;
     }
-    h1 {
-      color: #ffd700;
-      margin-bottom: 10px;
-    }
-    h2 {
-      color: #ffae00;
-      font-size: 18px;
-      margin: 8px 0;
-    }
+    h1 { color: #ffd700; margin-bottom: 10px; }
+    h2 { color: #ffae00; font-size: 18px; margin: 8px 0; }
     #qrcode { margin: 20px auto; }
-    footer {
-      color: #888;
-      font-size: 12px;
-      margin-top: 15px;
-    }
+    footer { color: #888; font-size: 12px; margin-top: 15px; }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 </head>
@@ -58,7 +47,7 @@
     document.getElementById("desc").textContent = desc;
     document.getElementById("code").textContent = code;
 
-    // Il QR porta alla pagina informativa con i termini
+    // Il QR porta alla pagina informativa con i termini e l’email aggiornata
     const qrUrl = `https://luckyexperience00.github.io/luckyexperience/info.html?desc=${encodeURIComponent(desc)}&code=${encodeURIComponent(code)}`;
 
     new QRious({
