@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voucher Lucky Experience</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at center, #000, #1a1a1a);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid #ffd70055;
+      border-radius: 12px;
+      padding: 20px;
+      display: inline-block;
+      box-shadow: 0 0 15px #ffd70033;
+      max-width: 360px;
+    }
+    h1 {
+      color: #ffd700;
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: #ffae00;
+      font-size: 18px;
+      margin: 8px 0;
+    }
+    #qrcode { margin: 20px auto; }
+    footer {
+      color: #888;
+      font-size: 12px;
+      margin-top: 15px;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+</head>
+
+<body>
+  <div class="card">
+    <h1>🎉 Lucky Experience</h1>
+    <h2 id="desc">Hai vinto un’esperienza esclusiva!</h2>
+    <canvas id="qrcode"></canvas>
+    <p>Codice voucher:</p>
+    <h2 id="code">LX-XXXXXX</h2>
+    <p>Valido per 90 giorni dalla data di vincita</p>
+    <footer>Mostra questo voucher alla struttura partner al momento della prenotazione.</footer>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const desc = params.get("desc") || "Sconto o esperienza Lucky Experience";
+    const code = params.get("code") || "LX-XXXXXX";
+    document.getElementById("desc").textContent = desc;
+    document.getElementById("code").textContent = code;
+
+    // Il QR porta alla pagina informativa con i termini
+    const qrUrl = `https://luckyexperience00.github.io/luckyexperience/info.html?desc=${encodeURIComponent(desc)}&code=${encodeURIComponent(code)}`;
+
+    new QRious({
+      element: document.getElementById("qrcode"),
+      value: qrUrl,
+      size: 180,
+      background: 'transparent',
+      foreground: '#ffd700'
+    });
+  </script>
+</body>
+</html>
