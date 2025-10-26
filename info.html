@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Informazioni Voucher - Lucky Experience</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at center, #111, #000);
+      color: #fff;
+      text-align: center;
+      padding: 30px;
+      line-height: 1.5;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid #ffd70055;
+      border-radius: 14px;
+      padding: 25px;
+      display: inline-block;
+      box-shadow: 0 0 18px #ffd70033;
+      max-width: 420px;
+    }
+    h1 {
+      color: #ffd700;
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: #ffb400;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #ccc;
+      font-size: 15px;
+      margin: 8px 0;
+    }
+    a {
+      color: #ffd700; font-weight:bold; text-decoration:none;
+    }
+    a:hover { text-decoration: underline; }
+    .footer { color:#777; font-size:12px; margin-top: 20px; }
+    .code {
+      background:#222; border:1px solid #444; border-radius:8px;
+      padding:8px 12px; display:inline-block; margin:8px 0; color:#ffd700;
+      font-weight:600; letter-spacing:1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎫 Voucher Lucky Experience</h1>
+    <h2>Come utilizzare il tuo premio</h2>
+
+    <p id="prizeText">Hai vinto un’esperienza Lucky Experience.</p>
+    <p>Codice voucher: <span id="code" class="code">LX-XXXXXX</span></p>
+
+    <p>Segui questi passaggi:</p>
+    <p>1️⃣ Contatta direttamente la <strong>struttura partner</strong> scelta.</p>
+    <p>2️⃣ Comunica il <strong>codice voucher</strong> e mostra questo schermo / QR.</p>
+    <p>3️⃣ La struttura verificherà il codice e confermerà la prenotazione.</p>
+
+    <h2>ℹ️ Validità</h2>
+    <p>Valido per <strong>90 giorni</strong> dalla data di vincita.</p>
+    <p>Uso singolo, non cedibile, non convertibile in denaro.</p>
+    <p>Non valido in alta stagione, weekend o festività, salvo diversa indicazione.</p>
+
+    <h2>📜 Termini e Condizioni</h2>
+    <p>Leggi i <a href="Termini_Condizioni_Voucher.pdf" target="_blank">Termini e Condizioni completi</a>.</p>
+
+    <h2>📧 Assistenza</h2>
+    <p>Scrivici: <a href="mailto:luckyexperience.info@gmail.com">luckyexperience.info@gmail.com</a></p>
+
+    <div class="footer">
+      Lucky Experience © 2025 – Tutti i diritti riservati • Napoli, Italia
+    </div>
+  </div>
+
+  <script>
+    const p = new URLSearchParams(location.search);
+    const desc = p.get("desc") || "";
+    const code = p.get("code") || "LX-XXXXXX";
+    if (desc) document.getElementById("prizeText").textContent = desc;
+    document.getElementById("code").textContent = code;
+  </script>
+</body>
+</html>
