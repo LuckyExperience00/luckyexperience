@@ -3,75 +3,91 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lucky Experience - Gira la Ruota</title>
+  <title>LuckyExperience – Gira la Ruota</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
       background: radial-gradient(circle at center, #111, #000);
       color: #fff;
       text-align: center;
-      padding: 25px;
+      padding: 30px;
     }
     h1 {
-      color: #ffd700;
-      font-size: 28px;
-      margin-bottom: 10px;
+      color: #FFD700;
+      font-size: 30px;
+      margin-bottom: 8px;
     }
     p {
       color: #bbb;
       margin-bottom: 20px;
+      line-height: 1.5;
     }
-    #paypal-container { margin: 24px auto; }
+    #paypal-container { margin: 26px auto; }
     #spin-button {
-      display:none;
-      background: linear-gradient(90deg, #ffd700, #ff8c00);
+      display: none;
+      background: linear-gradient(90deg, #FFD700, #FF8C00);
       color: #000;
       border: none;
-      border-radius: 10px;
-      padding: 12px 22px;
-      font-size: 17px;
+      border-radius: 12px;
+      padding: 14px 26px;
+      font-size: 18px;
       cursor: pointer;
       margin-top: 16px;
+      font-weight: 700;
       transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 0 14px #ffb40099;
     }
     #spin-button:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 14px #ffb400aa;
+      box-shadow: 0 0 18px #ffb400cc;
     }
-    #spin-button:disabled { opacity: .6; cursor:not-allowed; }
+    #spin-button:disabled { opacity: .6; cursor: not-allowed; }
     canvas {
-      width: 340px; height: 340px;
+      width: 360px;
+      height: 360px;
       border-radius: 50%;
       margin-top: 18px;
-      box-shadow: 0 0 20px #ffd70055;
+      box-shadow: 0 0 25px #ffd70055;
       background: radial-gradient(circle at 50% 50%, #333, #111);
     }
-    footer {
-      color:#777; font-size:12px; margin-top: 24px;
+    .legal {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #aaa;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
     }
+    a { color: #FFD700; text-decoration: none; }
+    a:hover { text-decoration: underline; }
   </style>
 
-  <!-- Tuo SDK PayPal + Hosted Buttons -->
+  <!-- SDK PayPal + Hosted Buttons -->
   <script src="https://www.paypal.com/sdk/js?client-id=BAAN6bRif0SiRgIVogFIdoXGcyTo8yCOdtp86-1BFsjPk9efx1Hid7QRfndhe3Oyv24vh_BQcCnnk1fsIY&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
 </head>
 
 <body>
-  <h1>🎡 Lucky Experience</h1>
-  <p>Paga e gira la ruota una sola volta per scoprire la tua esperienza!</p>
+  <img src="https://cdn.shopify.com/s/files/1/0972/5398/2543/files/logo_ritagliato.png?v=1761577845" alt="LuckyExperience" style="width:120px;margin-bottom:15px;">
+  <h1>🎡 LuckyExperience</h1>
+  <p>Effettua il pagamento e gira la ruota una sola volta per scoprire la tua esperienza esclusiva!</p>
 
   <div id="paypal-container"></div>
-  <button id="spin-button">Gira la Ruota!</button>
+  <button id="spin-button">🎯 Gira la Ruota!</button>
   <canvas id="wheelCanvas" width="400" height="400"></canvas>
 
-  <footer>Lucky Experience © 2025 – Tutti i diritti riservati</footer>
+  <div class="legal">
+    <p><strong>LuckyExperience</strong> è un servizio indipendente proposto in collaborazione con strutture partner.</p>
+    <p>Ogni partecipante ottiene sempre un premio garantito; non è gioco d’azzardo ai sensi del D.P.R. 430/2001.</p>
+    <p>📧 <a href="mailto:luckyexperienceinfoexperience@gmail.com">luckyexperienceinfoexperience@gmail.com</a></p>
+    <p>LuckyExperience © 2025 – Tutti i diritti riservati</p>
+  </div>
 
   <script>
     // === CONFIG ===
     const HOSTED_BUTTON_ID = "EVWS5RHG3HSQS";
     const RETURN_URL = "https://luckyexperience00.github.io/luckyexperience/?paid=1";
 
-    // Premi con probabilità controllate (somma = 100)
-    // label = testo corto sulla ruota (leggibile), desc = descrizione completa nel voucher
     const prizes = [
       { label:"BIG", desc:"1 notte in Camera King con percorso SPA", chance: 3 },
       { label:"TOP", desc:"1 notte in Suite con aperitivo incluso",  chance: 5 },
@@ -83,7 +99,6 @@
       { label:"20%+SPA", desc:"20% sconto 1 notte Standard + 60 min SPA", chance: 15 },
       { label:"10% Sosta", desc:"10% sconto sosta 3h in qualsiasi camera", chance: 20 }
     ];
-    // Colori armonizzati
     const colors = ["#FFD700","#FFB400","#FFA500","#FF8C00","#FFAE42","#FFC125","#FFB84D","#FFC966","#FF9F1C"];
 
     // === CANVAS RUOTA ===
@@ -93,7 +108,7 @@
     const N = prizes.length;
     const ARC = (2 * Math.PI) / N;
 
-    let currentRotation = 0; // in radianti
+    let currentRotation = 0;
 
     function drawWheel(rotation = 0) {
       const cx = canvas.width / 2;
@@ -101,31 +116,28 @@
       const r  = canvas.width / 2;
 
       ctx.clearRect(0,0,canvas.width,canvas.height);
-
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(rotation);
 
       for (let i=0; i<N; i++) {
-        // spicchio
         ctx.beginPath();
         ctx.moveTo(0,0);
         ctx.arc(0,0,r, i*ARC, (i+1)*ARC);
         ctx.fillStyle = colors[i % colors.length];
         ctx.fill();
 
-        // etichetta breve sul bordo
         ctx.save();
         ctx.rotate(i*ARC + ARC/2);
         ctx.fillStyle = "#000";
         ctx.font = "bold 16px Poppins";
         ctx.textAlign = "right";
-        ctx.fillText(prizes[i].label, r - 10, 8);
+        ctx.fillText(prizes[i].label, r - 12, 6);
         ctx.restore();
       }
       ctx.restore();
 
-      // puntatore (triangolino in alto)
+      // puntatore
       ctx.fillStyle = "#fff";
       ctx.beginPath();
       const px = canvas.width/2;
@@ -138,7 +150,6 @@
 
     drawWheel(currentRotation);
 
-    // Estrazione ponderata
     function weightedPick(items) {
       const total = items.reduce((s, it) => s + it.chance, 0);
       let r = Math.random() * total;
@@ -146,17 +157,12 @@
         if (r < items[i].chance) return i;
         r -= items[i].chance;
       }
-      return items.length - 1; // fallback
+      return items.length - 1;
     }
 
-    // Calcola rotazione finale per far fermare la ruota sul premio target
     function computeTargetRotation(targetIndex) {
-      // vogliamo che il centro dello spicchio target finisca sotto al puntatore in alto.
-      // Quando rotation=0, il centro dello spicchio 0 è sull'asse +X (a destra).
-      // Il puntatore è in alto (angolo -PI/2). Quindi:
-      // rotation_target = -PI/2 - (targetIndex*ARC + ARC/2) + 2*PI*k
       const base = -Math.PI/2 - (targetIndex * ARC + ARC/2);
-      const turns = 6 + Math.floor(Math.random()*3); // 6-8 giri completi
+      const turns = 6 + Math.floor(Math.random()*3);
       return base + turns * 2 * Math.PI;
     }
 
@@ -167,13 +173,8 @@
       isSpinning = true;
       spinBtn.disabled = true;
 
-      // 1) scegli il premio in base alle probabilità
       const winnerIndex = weightedPick(prizes);
-
-      // 2) calcola la rotazione finale per atterrare proprio su quello spicchio
       const targetRotation = computeTargetRotation(winnerIndex);
-
-      // 3) anima da currentRotation a targetRotation
       const duration = 4800;
       const start = performance.now();
       const startRot = currentRotation;
@@ -191,7 +192,6 @@
           currentRotation = targetRotation % (2*Math.PI);
           isSpinning = false;
 
-          // 4) genera codice e vai al voucher
           const prize = prizes[winnerIndex];
           const code = "LX-" + Math.random().toString(36).substring(2, 8).toUpperCase();
           const encodedDesc = encodeURIComponent(prize.desc);
@@ -206,18 +206,18 @@
     paypal.HostedButtons({
       hostedButtonId: HOSTED_BUTTON_ID,
       onApprove: function () {
-        localStorage.setItem("paid_flag", "true"); // sblocca lo spin
+        localStorage.setItem("paid_flag", "true");
         alert("✅ Pagamento completato! Ora puoi girare la ruota.");
         document.getElementById("spin-button").style.display = "inline-block";
       }
     }).render("#paypal-container");
 
-    // Sblocco spin dopo redirect ?paid=1
+    // Sblocco dopo redirect
     document.addEventListener("DOMContentLoaded", function(){
       const params = new URLSearchParams(window.location.search);
       if (params.get("paid") === "1" || localStorage.getItem("paid_flag") === "true") {
         document.getElementById("spin-button").style.display = "inline-block";
-        localStorage.removeItem("paid_flag"); // una volta mostrato, si consuma
+        localStorage.removeItem("paid_flag");
       }
     });
 
