@@ -19,12 +19,38 @@
       padding: 20px;
       display: inline-block;
       box-shadow: 0 0 15px #ffd70033;
-      max-width: 360px;
+      max-width: 420px;
     }
     h1 { color: #ffd700; margin-bottom: 10px; }
     h2 { color: #ffae00; font-size: 18px; margin: 8px 0; }
-    #qrcode { margin: 20px auto; }
-    footer { color: #888; font-size: 12px; margin-top: 15px; }
+    #qrcode { margin: 18px auto; }
+    .btn {
+      display: inline-block;
+      background: #D4AF37;
+      color: #000;
+      font-weight: 700;
+      padding: 12px 18px;
+      border-radius: 32px;
+      box-shadow: 0 0 14px rgba(212,175,55,.45);
+      text-decoration: none;
+      margin: 8px 6px 0;
+      font-size: 14px;
+    }
+    .btn:hover { filter: brightness(1.07); }
+    .note {
+      text-align: left;
+      font-size: 13px;
+      color: #cfcfcf;
+      background: rgba(255,215,0,0.06);
+      border: 1px solid rgba(255,215,0,0.25);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 14px;
+      line-height: 1.6;
+    }
+    footer { color: #888; font-size: 12px; margin-top: 14px; }
+    a.link { color: #ffd700; text-decoration: none; }
+    a.link:hover { text-decoration: underline; }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 </head>
@@ -33,11 +59,38 @@
   <div class="card">
     <h1>🎉 Lucky Experience</h1>
     <h2 id="desc">Hai vinto un’esperienza esclusiva!</h2>
+
     <canvas id="qrcode"></canvas>
+
     <p>Codice voucher:</p>
     <h2 id="code">LX-XXXXXX</h2>
     <p>Valido per 90 giorni dalla data di vincita</p>
-    <footer>Mostra questo voucher alla struttura partner al momento della prenotazione.</footer>
+
+    <!-- Pulsanti utili -->
+    <div>
+      <!-- Elenco strutture partner (icona SPA/Jacuzzi) -->
+      <a class="btn" href="https://luckyexperience00.github.io/luckyexperience-site/partners-list.html" target="_blank">🌍 Strutture Partner</a>
+      <!-- Termini -->
+      <a class="btn" href="LuckyExperience_Politiche_Utilizzo_Reclami.pdf" target="_blank">📄 Termini & Politiche</a>
+    </div>
+
+    <!-- Regole chiare di utilizzo -->
+    <div class="note">
+      <strong>Come riscattare il premio</strong>
+      <ul style="padding-left:18px; margin:8px 0;">
+        <li>I premi con <em>SPA/Jacuzzi</em> si riscattano presso le strutture partner contrassegnate 🧖‍♀️/💦 nell’elenco “Strutture Partner”.</li>
+        <li>Se scegli una struttura che non offre quel servizio, il premio viene convertito in uno <strong>sconto equivalente sul pernottamento</strong>.</li>
+        <li>Se la struttura non offre <em>soste</em>, gli sconti “Sosta” valgono come <strong>50% dello sconto sulla Notte</strong> (es. 20% Sosta → 10% Notte).</li>
+      </ul>
+      <div style="font-size:12px;color:#bdbdbd;margin-top:6px;">
+        Per dubbi: <a class="link" href="mailto:luckyexperienceinfoexperience@gmail.com">luckyexperienceinfoexperience@gmail.com</a>
+      </div>
+    </div>
+
+    <footer>
+      Mostra questo voucher alla struttura partner al momento della prenotazione.<br/>
+      LuckyExperience è un servizio indipendente, con premi garantiti (non gioco d’azzardo – D.P.R. 430/2001).
+    </footer>
   </div>
 
   <script>
@@ -47,7 +100,7 @@
     document.getElementById("desc").textContent = desc;
     document.getElementById("code").textContent = code;
 
-    // Il QR porta alla pagina informativa con i termini e l’email aggiornata
+    // Il QR porta a una pagina info con i dettagli (puoi creare/aggiornare info.html nel repo -site)
     const qrUrl = `https://luckyexperience00.github.io/luckyexperience/info.html?desc=${encodeURIComponent(desc)}&code=${encodeURIComponent(code)}`;
 
     new QRious({
