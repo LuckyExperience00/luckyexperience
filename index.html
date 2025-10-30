@@ -54,7 +54,7 @@
       margin-top: 40px;
       font-size: 12px;
       color: #aaa;
-      max-width: 600px;
+      max-width: 700px;
       margin-left: auto;
       margin-right: auto;
       line-height: 1.6;
@@ -73,7 +73,7 @@
   <p>Effettua il pagamento e gira la ruota una sola volta per scoprire la tua esperienza esclusiva!</p>
 
   <!-- Frase legale di accettazione -->
-  <p style="font-size:13px;color:#FFD700;max-width:420px;margin:0 auto 12px;">
+  <p style="font-size:13px;color:#FFD700;max-width:520px;margin:0 auto 12px;">
     Effettuando il pagamento dichiari di aver letto e accettato i 
     <a href="LuckyExperience_Politiche_Utilizzo_Reclami.pdf" target="_blank" style="color:#FFD700;">
       Termini e politiche LuckyExperience
@@ -85,11 +85,10 @@
   <canvas id="wheelCanvas" width="400" height="400"></canvas>
 
   <div class="legal">
-    <p><strong>LuckyExperience</strong> è un servizio indipendente proposto in collaborazione con strutture partner.</p>
-    <p>Ogni partecipante ottiene sempre un premio garantito; non è gioco d’azzardo ai sensi del D.P.R. 430/2001.</p>
+    <p><strong>Nota premi “Premium” (SPA/Jacuzzi):</strong> i premi che includono SPA o Jacuzzi sono riscattabili presso le strutture partner dotate di tali servizi (indicate nell’elenco partner con i simboli 🧖‍♀️/💦). Se scegli una struttura che non offre quel servizio, il premio verrà convertito in uno <strong>sconto equivalente sul pernottamento</strong>. Gli sconti “Sosta” sono convertibili al <strong>50%</strong> come sconto notte nelle strutture che non offrono la sosta.</p>
+    <p><strong>LuckyExperience</strong> è un servizio indipendente proposto in collaborazione con strutture partner. Ogni partecipante ottiene sempre un premio garantito; non è gioco d’azzardo (D.P.R. 430/2001).</p>
     <p>📧 <a href="mailto:luckyexperienceinfoexperience@gmail.com">luckyexperienceinfoexperience@gmail.com</a></p>
-    <p>LuckyExperience © 2025 – Tutti i diritti riservati</p>
-    <p><a href="LuckyExperience_Politiche_Utilizzo_Reclami.pdf" target="_blank">📄 Termini e politiche LuckyExperience</a></p>
+    <p>LuckyExperience © 2025 – Tutti i diritti riservati • <a href="LuckyExperience_Politiche_Utilizzo_Reclami.pdf" target="_blank">📄 Termini e politiche</a></p>
   </div>
 
   <script>
@@ -97,22 +96,25 @@
     const HOSTED_BUTTON_ID = "EVWS5RHG3HSQS";
     const RETURN_URL = "https://luckyexperience00.github.io/luckyexperience/?paid=1";
 
-    // === PREMI AGGIORNATI ===
+    // === NUOVI PREMI (universali + premium) ===
+    // NB: le chance sono pesi relativi; somma libera.
     const prizes = [
-      { label:"BIG", desc:"1 notte in Suite con Jacuzzi e percorso SPA", chance: 5 },
-      { label:"STD", desc:"1 notte in Standard con aperitivo incluso", chance: 8 },
-      { label:"25%+SPA", desc:"25% sconto su 1 notte + 60 min SPA", chance: 12 },
-      { label:"20%+SPA", desc:"20% sconto su 1 notte + 60 min SPA", chance: 12 },
-      { label:"15%+SPA", desc:"15% sconto su 1 notte + 60 min SPA", chance: 10 },
-      { label:"20% Suite", desc:"20% sconto su 1 notte in Suite", chance: 10 },
-      { label:"15% Suite", desc:"15% sconto su 1 notte in Suite", chance: 8 },
-      { label:"10% Sosta", desc:"10% sconto su sosta 3h in qualsiasi camera", chance: 10 },
-      { label:"15% Sosta", desc:"15% sconto su sosta 3h in qualsiasi camera", chance: 8 },
-      { label:"20% Sosta", desc:"20% sconto su sosta 3h in qualsiasi camera", chance: 7 },
-      { label:"10% Notte", desc:"10% sconto su 1 notte in qualsiasi camera", chance: 10 }
+      { label:"45% Notte", desc:"45% di sconto su 1 pernottamento", chance: 2 },
+      { label:"40% Notte", desc:"40% di sconto su 1 pernottamento", chance: 3 },
+      { label:"35% Notte", desc:"35% di sconto su 1 pernottamento", chance: 5 },
+      { label:"30% Notte", desc:"30% di sconto su 1 pernottamento", chance: 7 },
+      { label:"25% Notte", desc:"25% di sconto su 1 pernottamento", chance: 9 },
+      { label:"20% Notte", desc:"20% di sconto su 1 pernottamento", chance: 11 },
+      { label:"15% Notte", desc:"15% di sconto su 1 pernottamento", chance: 13 },
+      { label:"10% Notte", desc:"10% di sconto su 1 pernottamento", chance: 15 },
+      { label:"20% Sosta", desc:"20% di sconto su una sosta 3h (o 10% notte se la sosta non è disponibile)", chance: 8 },
+      { label:"15% Sosta", desc:"15% di sconto su una sosta 3h (o 7.5% notte se la sosta non è disponibile)", chance: 9 },
+      { label:"10% Sosta", desc:"10% di sconto su una sosta 3h (o 5% notte se la sosta non è disponibile)", chance: 9 },
+      { label:"SPA60",     desc:"Percorso SPA di 60 minuti (riscattabile solo in strutture con 🧖‍♀️)", chance: 3 },
+      { label:"Jacuzzi",   desc:"Upgrade gratuito in camera con Jacuzzi (riscattabile solo in strutture con 💦)", chance: 2 }
     ];
 
-    const colors = ["#FFD700","#FFB400","#FFA500","#FF8C00","#FFAE42","#FFC125","#FFB84D","#FFC966","#FF9F1C"];
+    const colors = ["#FFD700","#FFB400","#FFA500","#FF8C00","#FFAE42","#FFC125","#FFB84D","#FFC966","#FF9F1C","#FFC04D","#FFB266","#FFA64D"];
 
     // === CANVAS RUOTA ===
     const canvas = document.getElementById("wheelCanvas");
@@ -143,7 +145,7 @@
         ctx.save();
         ctx.rotate(i*ARC + ARC/2);
         ctx.fillStyle = "#000";
-        ctx.font = "bold 16px Poppins";
+        ctx.font = "bold 14px Poppins";
         ctx.textAlign = "right";
         ctx.fillText(prizes[i].label, r - 12, 6);
         ctx.restore();
